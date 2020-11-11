@@ -1,11 +1,19 @@
 const express = require('express');
-const multer  = require('multer')
+const multer  = require('multer');
+const fs = require('fs');
 // const upload = multer({ dest: '../Data' })
+const DATAPATH = "../DATA"
 const upload = multer({
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
-            console.log(req.url);
-            // cb(null, false);
+            const path = DATAPATH+req.url.split('?')[0]
+            console.log(path);
+            if (!fs.existsSync(path)) {
+                console.log('make');
+                fs.mkdir(path, {recursive: true}, (err) => {
+                    cb(null, path);
+                })
+            }
         }
     })
 });
