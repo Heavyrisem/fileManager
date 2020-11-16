@@ -1,0 +1,67 @@
+.Header {
+    width: 100%;
+    /* height: 5vh; */
+    display: flex;
+    box-shadow: 0px 1px 10px rgb(180, 180, 180);
+}
+
+.MainIcon {
+    margin: .4rem 1rem .4rem 2rem;
+    width: 3rem;
+}
+.MainIcon img {
+    width: 100%;
+    height: 100%;
+}
+
+
+@font-face {
+    font-family: NanumGothic;
+    src: url("../fonts/NanumBarunGothic.ttf");
+}
+.PageTitle {
+    font-family: NanumGothic;
+    display: flex;
+    font-size: 2rem;
+    color: rgb(58, 58, 58);
+}
+.PageTitle span {
+    margin: auto;
+}
+
+.SearchBar {
+    display: flex;
+    flex: auto;
+    margin-left: 30%;
+}
+.SearchBar input {
+    font-size: 1.3rem;
+    font-weight: bold;
+    /* font-family: monospace; */
+    padding: .2rem 1rem;
+
+    margin: auto;
+    width: 100%;
+    height: 55%;
+
+    border: none;
+    background-color: rgb(231, 231, 231);
+    border-radius: .8rem;
+}
+
+.User {
+    display: flex;
+    flex: auto;
+    margin: auto;
+    align-items: center;
+}
+.User * {
+    margin: auto;
+}
+.Profileimg {
+    
+    width: 2rem;
+    height: 2rem;
+    border-radius: 2rem;
+    background-color: rgb(151, 151, 151);
+}

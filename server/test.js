@@ -28,7 +28,7 @@ const upload = multer({
                 res.forEach(filelist => {
                     if (filelist.name+filelist.type == file.fieldname) return console.log("파일 중복됨"); // res.send(오류 발생 필요)
                 });
-                cb(null, file.fieldname);
+                cb(null, file.originalname);
                 console.log(res);
             });
         }
@@ -52,16 +52,43 @@ app.post("/index/*", (res, req) => {
     })
 });
 
+app.post("/remove/*", (res, req) => {
+    res.url = res.url.replace("/remove", "");
+    const path = DATAPATH+res.url.split('?')[0];
 
+    DirM.removeFile(path, result => {
+        if (result.err) return req.send({status: 1, msg: result.err, path: path});
+        else return req.send({status: 0, msg: "REMOVED", path: path});
+    })
+
+})
+
+app.post("/diskinfo", (res, req) => {
+    DirM.getFreeDiskSize(info => {
+       if (info.err) req.send({status: 1, msg: err});
+       else return req.send(info);
+    });
+})
+
+app.post("/download/*", (res, req) => {
+    res.url = res.url.replace("/download", "");
+    const path = DATAPATH+res.url.split('?')[0];
+
+    DirM.detailDataInfo(path, (err, info) => {
+        if (err) return req.send({status: 1, msg: err});
+        else return req.download(path);
+    })
+})
 
 app.put("/upload/*", upload.any(), (res, req) => {
     res.url = res.url.replace("/upload", "");
     
     let list = [];
+    if (res.files == null) return req.send({status: 1, msg: "NO_FILE_RECIVED"});
     res.files.forEach(val => {
         list.push(val.fieldname);
     });
-    req.send(list + " has recived");
+    req.send({status: 0, msg: "FILE_RECIVED"});
 });
 
 app.put("/mkdir/*", (res, req) => {
