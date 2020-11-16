@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './style/Header.css';
 import MainIcon from './icons/Main.svg';
+import NoticeIcon from './icons/Notice.svg';
+import MenuIcon from './icons/Menu.svg';
 
 class Header extends Component {
   
@@ -19,10 +21,16 @@ class Header extends Component {
       </div>
       <div className="User">
         <div className="Profileimg"></div>
-        <div className="Username">이승민</div>
+        <div className="Username">
+          <span className="USN">이승민<i className="fas fa-caret-down"></i></span>
+          <div className="UserAction_dropdown">
+            <a href="#">계정 설정</a>
+            <a href="#">로그아웃</a>
+          </div>
+        </div>
       </div>
-      <div className="Notice"></div>
-      <div className="Menu"></div>
+      <img className="Notice" src={NoticeIcon}></img>
+      <img className="Menu" src={MenuIcon}></img>
     </div>
     )
   }

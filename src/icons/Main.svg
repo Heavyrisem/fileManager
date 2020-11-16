@@ -1,3 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="127.56" height="127.561" viewBox="0 0 127.56 127.561">
-  <path id="패스_1764" data-name="패스 1764" d="M2499.853,13406a63.78,63.78,0,1,0,63.78,63.781A63.777,63.777,0,0,0,2499.853,13406Zm0,109.66a45.88,45.88,0,1,1,45.881-45.879A45.88,45.88,0,0,1,2499.853,13515.66Z" transform="translate(-2436.073 -13406)" fill="#535453"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="39" height="44" viewBox="0 0 39 44">
+    <defs>
+        <style>
+            .cls-3{stroke:none}
+        </style>
+    </defs>
+    <g id="그룹_4578" transform="translate(-18 -57.157)">
+        <g id="타원_89" fill="none" stroke="#ff5548" stroke-width="8px" transform="translate(18 63.157)">
+            <circle cx="19" cy="19" r="19" class="cls-3"/>
+            <circle cx="19" cy="19" r="15"/>
+        </g>
+        <g id="다각형_1" fill="#17bf33">
+            <path d="M13.045 26.5H1.955L7.5 5.797 13.045 26.5z" class="cls-3" transform="rotate(-150 33.411 38.692)"/>
+            <path fill="#fff" d="M7.5 11.595L3.91 25h7.18L7.5 11.595M7.5 0L15 28H0L7.5 0z" transform="rotate(-150 33.411 38.692)"/>
+        </g>
+    </g>
 </svg>

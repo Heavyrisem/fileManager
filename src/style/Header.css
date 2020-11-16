@@ -4,9 +4,12 @@
     display: flex;
     box-shadow: 0px 1px 10px rgb(180, 180, 180);
 }
+.Header * {
+    display: flex;
+}
 
 .MainIcon {
-    margin: .4rem 1rem .4rem 2rem;
+    margin: .4rem .5rem .4rem 2rem;
     width: 3rem;
 }
 .MainIcon img {
@@ -16,11 +19,11 @@
 
 
 @font-face {
-    font-family: NanumGothic;
-    src: url("../fonts/NanumBarunGothic.ttf");
+    font-family: Malgun Gothic;
+    src: url("../fonts/malgun.ttf");
 }
 .PageTitle {
-    font-family: NanumGothic;
+    font-family: Malgun Gothic;
     display: flex;
     font-size: 2rem;
     color: rgb(58, 58, 58);
@@ -31,13 +34,12 @@
 
 .SearchBar {
     display: flex;
-    flex: auto;
-    margin-left: 30%;
+    flex: 1;
+    margin-left: 45%;
 }
 .SearchBar input {
     font-size: 1.3rem;
     font-weight: bold;
-    /* font-family: monospace; */
     padding: .2rem 1rem;
 
     margin: auto;
@@ -51,17 +53,68 @@
 
 .User {
     display: flex;
-    flex: auto;
     margin: auto;
+    margin-right: .3rem;
     align-items: center;
 }
 .User * {
     margin: auto;
 }
+
 .Profileimg {
-    
+    margin: 0 .2rem;
     width: 2rem;
     height: 2rem;
     border-radius: 2rem;
-    background-color: rgb(151, 151, 151);
+    background-color: rgb(231, 231, 231);
+}
+
+.Username {
+    margin: 0 .2rem;
+    font-size: .9rem;
+    display: inline-block;
+    position: relative;
+}
+.Username i {
+    margin: 0 .2rem;
+}
+
+.UserAction_dropdown {
+    transition-duration: 1s ;
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+.UserAction_dropdown a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+.UserAction_dropdown a:hover {background-color: #ddd;}
+.Username:hover .UserAction_dropdown {display: block;}
+
+.Notice {
+    width: 3rem;
+    height: 3rem;
+    margin: auto;
+    border-radius: 2rem;
+    /* background-color: rgb(151, 151, 151); */
+    margin: auto;
+    margin-left: 0;
+    margin-right: 1rem;
+}
+
+.Menu {
+    width: 3rem;
+    height: 3rem;
+    margin: auto;
+    border-radius: 2rem;
+    /* background-color: rgb(151, 151, 151); */
+    margin: auto;
+    margin-left: 0;
+    margin-right: 1rem;
 }
