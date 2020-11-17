@@ -1,7 +1,22 @@
 const express = require('express');
 const multer  = require('multer');
 const DATAPATH = "../DATA";
+const cors = require('cors');
 const DirM = require('./DirectoryManager');
+const bodyParser = require('body-parser');
+const app = express();
+app.use(cors());
+// DirM.init(DATAPATH);
+// let Timer = Date.now();
+// DirM.searchByName('test', DATAPATH).then(result => {
+//     console.log(`검색 소요 시간 : ${Date.now() - Timer}ms, 일치하는 결과 ${result.length} 개 발견`)
+//     // console.log(result);
+// })
+
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 
 
 const upload = multer({
@@ -34,27 +49,39 @@ const upload = multer({
         }
     })
 });
-const app = express();
 
 function replace(str, replaceStr) {
     return str.split(searchStr).join(replaceStr);
 }
 
 
-app.post("/index/*", (res, req) => {
-    res.url = res.url.replace("/index", "");
-    const path = DATAPATH+res.url.split('?')[0];
-
+app.post("/index", (req, res) => {
+    // req.url = req.url.replace("/index", "");
+    // const path = DATAPATH+req.url.split('?')[0];
+    const path = DATAPATH+'/'+req.body.path;
+    const Timer = Date.now();
     DirM.getInsideDir(path, result => {
-        if (result.err) req.send({status:1, msg: result.err});
-        else req.send({status: 0, msg: result});
+        if (result.err) res.send({status:1, msg: result.err});
+        else res.send({status: 0, msg: result, executeTime: Date.now() - Timer});
         // console.log(result);
     })
 });
 
-app.post("/remove/*", (res, req) => {
-    res.url = res.url.replace("/remove", "");
-    const path = DATAPATH+res.url.split('?')[0];
+app.post("/search", (req, res) => {
+    if (req.body.keyword == null) {
+        res.send({status: 1, msg: "KEYWORD_NOT_RECIVED"});
+    } else {
+        let timestamp = Date.now();
+        DirM.searchByName(req.body.keyword, DATAPATH).then(result => {
+            res.send({status: 0, msg: result, executeTime: Date.now() - timestamp});
+        });
+    }
+});
+
+app.post("/remove", (res, req) => {
+    // res.url = res.url.replace("/remove", "");
+    // const path = DATAPATH+res.url.split('?')[0];
+    const path = DATAPATH+'/'+req.body.path;
 
     DirM.removeFile(path, result => {
         if (result.err) return req.send({status: 1, msg: result.err, path: path});
@@ -65,14 +92,15 @@ app.post("/remove/*", (res, req) => {
 
 app.post("/diskinfo", (res, req) => {
     DirM.getFreeDiskSize(info => {
-       if (info.err) req.send({status: 1, msg: err});
+       if (info.err) req.send({status: 1, msg: info.err});
        else return req.send(info);
     });
 })
 
-app.post("/download/*", (res, req) => {
-    res.url = res.url.replace("/download", "");
-    const path = DATAPATH+res.url.split('?')[0];
+app.post("/download", (res, req) => {
+    // res.url = res.url.replace("/download", "");
+    // const path = DATAPATH+res.url.split('?')[0];
+    const path = DATAPATH+'/'+req.body.path;
 
     DirM.detailDataInfo(path, (err, info) => {
         if (err) return req.send({status: 1, msg: err});
@@ -91,9 +119,10 @@ app.put("/upload/*", upload.any(), (res, req) => {
     req.send({status: 0, msg: "FILE_RECIVED"});
 });
 
-app.put("/mkdir/*", (res, req) => {
-    res.url.replace("/mkdir", "");
-    const path = DATAPATH+res.url.split('?')[0];
+app.put("/mkdir", (res, req) => {
+    // res.url.replace("/mkdir", "");
+    // const path = DATAPATH+res.url.split('?')[0];
+    const path = DATAPATH+'/'+req.body.path;
     getInsideDir(path, result => {
         
         if (result.err) {

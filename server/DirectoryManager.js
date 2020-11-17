@@ -1,6 +1,7 @@
 const fs = require('fs');
 const pt = require('path');
 const checkdisk = require('check-disk-space');
+const unitchanger = require('unitchanger');
 
 
 // 파일 업로드 O
@@ -11,7 +12,7 @@ const checkdisk = require('check-disk-space');
 // 디스크 용량 가져오기 O
 
 
-// 파일 검색 X
+// 파일 검색 O
 // 유저 홈 디렉토리 X
 
 class DManager {
@@ -21,8 +22,13 @@ class DManager {
     }
 
     getFreeDiskSize(callback) {
-        checkdisk(this.root_path).then(info => {
-            callback(info);
+        checkdisk(__dirname).then(info => {
+            let outdata = {
+                free: unitchanger.ByteCal(info.free),
+                size: unitchanger.ByteCal(info.size),
+                diskPath: info.diskPath
+            }
+            callback(outdata);
         })
         .catch(err => {
             callback({err: err});
@@ -47,6 +53,55 @@ class DManager {
         });
     }
 
+    searchByName(name ,rootPath, deep) {
+        return new Promise((resolve, reject) => {
+            if (deep == undefined) deep = 0;
+
+            this.getInsideDir(rootPath, async list => {
+                let found = [];
+                
+                await Promise.all(list.map(async (data, idx) => {
+                    if (data.name.indexOf(name) != -1) {
+                        found.push(data);
+                    }
+                    if (!data.isFile) {
+                        // console.log('Search ' + data.path);
+                        let tmp = await this.searchByName(name, data.path, deep+1);
+                        found = found.concat(tmp);
+                    }
+
+                    // console.log(`${found.length} 개 결과 찾음, ${deep} 깊이 탐색`);
+                }));
+                resolve(found);
+            });
+
+        })
+    }
+    
+    // searchByName(name, rootPath, callback) {
+    //     this.getInsideDir(rootPath, list => {
+    //         let found = [];
+            
+    //         list.forEach(async (data, idx) => {
+    //             if (data.name.indexOf(name) != -1) {
+    //                 found.push(data);
+    //             }
+    //             if (!data.isFile) {
+    //                 console.log('Search ' + data.path);
+    //                 this.searchByName(name, data.path, result => {
+    //                     found = found.concat(result);
+    //                     console.log('found', found);
+
+    //                     // if (list.length == idx+1) callback(found);
+    //                 });
+    //             }
+    //             if (list.length == idx+1) callback(found);
+    //             console.log(list.length, idx);
+    //         });
+    //         // console.log("found", found);
+    //         // callback(found);
+    //     });
+    // }
 
     getInsideDir(path, callback) {
         let dirlist = [];
@@ -72,8 +127,11 @@ class DManager {
     detailDataInfo(path, callback) {
         fs.stat(path, (err, stats) => {
             if (err) return callback(err, undefined);
-                    
+            
+            let name = path.split('/');
+
             let info = {
+                name: name[name.length-1],
                 path: path,
                 isFile: stats.isFile(),
                 size: stats.size,
