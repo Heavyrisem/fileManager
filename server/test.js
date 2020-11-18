@@ -4,6 +4,7 @@ const DATAPATH = "../DATA";
 const cors = require('cors');
 const DirM = require('./DirectoryManager');
 const bodyParser = require('body-parser');
+const fs = require('fs');
 const app = express();
 app.use(cors());
 // DirM.init(DATAPATH);
@@ -22,9 +23,9 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 const upload = multer({
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
-            res.url = res.url.replace("/upload", "");
+            req.url = req.url.replace("/upload", "");
             const path = DATAPATH+req.url.split('?')[0];
-            console.log(path);
+            // console.log(path);
             if (!fs.existsSync(path)) {
                 console.log(path + " is not found Creating New Directory");
                 fs.mkdir(path, {recursive: true}, (err) => {
@@ -36,15 +37,15 @@ const upload = multer({
             }
         },
         filename: (req, file, cb) => {
-            res.url = res.url.replace("/upload", "");
+            req.url = req.url.replace("/upload", "");
             const path = DATAPATH+req.url.split('?')[0];
 
-            getInsideDir(path, res => {
-                res.forEach(filelist => {
-                    if (filelist.name+filelist.type == file.fieldname) return console.log("파일 중복됨"); // res.send(오류 발생 필요)
+            DirM.getInsideDir(path, req => {
+                req.forEach(filelist => {
+                    if (filelist.name+filelist.type == file.fieldname) return console.log("파일 중복됨"); // req.send(오류 발생 필요)
                 });
                 cb(null, file.originalname);
-                console.log(res);
+                console.log(req);
             });
         }
     })
@@ -81,7 +82,8 @@ app.post("/search", (req, res) => {
 app.post("/remove", (res, req) => {
     // res.url = res.url.replace("/remove", "");
     // const path = DATAPATH+res.url.split('?')[0];
-    const path = DATAPATH+'/'+req.body.path;
+    const path = DATAPATH+'/'+res.body.path;
+
 
     DirM.removeFile(path, result => {
         if (result.err) return req.send({status: 1, msg: result.err, path: path});
@@ -95,7 +97,7 @@ app.post("/diskinfo", (res, req) => {
        if (info.err) req.send({status: 1, msg: info.err});
        else return req.send(info);
     });
-})
+});
 
 app.post("/download", (res, req) => {
     // res.url = res.url.replace("/download", "");
@@ -108,7 +110,7 @@ app.post("/download", (res, req) => {
     })
 })
 
-app.put("/upload/*", upload.any(), (res, req) => {
+app.post("/upload/*", upload.any(), (res, req) => {
     res.url = res.url.replace("/upload", "");
     
     let list = [];

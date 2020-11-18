@@ -111,10 +111,10 @@ class DManager {
             if (err) return callback({err: err});
             if (files.length == 0) return callback(dirlist);
             files.forEach(file => {
-
+                // console.log(path);
                 this.detailDataInfo(path+'/'+file.name, (err, info) => {
                     if (err) return callback({err: err});
-
+                    
                     dirlist.push(info);
                     if (dirlist.length == files.length) return callback(dirlist);
                 });
@@ -122,7 +122,6 @@ class DManager {
             });
         });
     }
-
 
     detailDataInfo(path, callback) {
         fs.stat(path, (err, stats) => {
