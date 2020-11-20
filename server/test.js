@@ -99,15 +99,15 @@ app.post("/diskinfo", (res, req) => {
     });
 });
 
-app.post("/download", (res, req) => {
+app.get("/download", (res, req) => {
     // res.url = res.url.replace("/download", "");
-    // const path = DATAPATH+res.url.split('?')[0];
-    const path = DATAPATH+'/'+req.body.path;
+    const path = DATAPATH+res.query.path;
+    // const path = DATAPATH+'/'+res.body.path;
 
     DirM.detailDataInfo(path, (err, info) => {
         if (err) return req.send({status: 1, msg: err});
         else return req.download(path);
-    })
+    });
 })
 
 app.post("/upload/*", upload.any(), (res, req) => {
@@ -146,6 +146,23 @@ app.put("/mkdir", (res, req) => {
     });
     
 });
+
+
+app.post("/register", (req, res) => {
+    const id = req.body.id;
+    const pw = req.body.pw;
+    
+    d
+
+
+    res.status(500).send("not ready");
+})
+
+app.post("/login", (req, res) => {
+    console.log()
+})
+
+
 
 app.listen(3001, () => {
     DirM.init(DATAPATH);
