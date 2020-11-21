@@ -1,0 +1,15 @@
+@media (prefers-color-scheme: dark) {
+    .Body {
+        background-color: rgb(61, 61, 61)!important;
+        color: white;
+    }
+}
+
+.Body {
+    background-color: white;
+    height: 100%;
+    padding: 2rem;
+}
+.Body div {
+    padding-bottom: 1rem;
+}

@@ -1,3 +1,13 @@
+@media (prefers-color-scheme: dark) {
+    .Header {
+        background-color: rgb(36, 36, 36);
+        color: rgb(235, 235, 235);
+    }
+    .SearchBar input {
+        background-color: rgb(73, 73, 73)!important;
+    }
+}
+
 .Header {
     width: 100%;
     /* height: 5vh; */
@@ -10,7 +20,7 @@
 
 .MainIcon {
     margin: .4rem .5rem .4rem 2rem;
-    width: 3rem;
+    width: 2.5rem;
 }
 .MainIcon img {
     width: 100%;
@@ -26,7 +36,7 @@
     font-family: Malgun Gothic;
     display: flex;
     font-size: 2rem;
-    color: rgb(58, 58, 58);
+    /* color: rgb(58, 58, 58); */
 }
 .PageTitle span {
     margin: auto;
@@ -35,7 +45,7 @@
 .SearchBar {
     display: flex;
     flex: 1;
-    margin-left: 45%;
+    margin-left: 30%;
 }
 .SearchBar input {
     font-size: 1.3rem;
