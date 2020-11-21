@@ -1,17 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="39" height="44" viewBox="0 0 39 44">
-    <defs>
-        <style>
-            .cls-3{stroke:none}
-        </style>
-    </defs>
-    <g id="그룹_4578" transform="translate(-18 -57.157)">
-        <g id="타원_89" fill="none" stroke="#ff5548" stroke-width="8px" transform="translate(18 63.157)">
-            <circle cx="19" cy="19" r="19" class="cls-3"/>
-            <circle cx="19" cy="19" r="15"/>
-        </g>
-        <g id="다각형_1" fill="#17bf33">
-            <path d="M13.045 26.5H1.955L7.5 5.797 13.045 26.5z" class="cls-3" transform="rotate(-150 33.411 38.692)"/>
-            <path fill="#fff" d="M7.5 11.595L3.91 25h7.18L7.5 11.595M7.5 0L15 28H0L7.5 0z" transform="rotate(-150 33.411 38.692)"/>
-        </g>
+  <g id="그룹_4578" data-name="그룹 4578" transform="translate(-18 -57.157)">
+    <g id="타원_89" data-name="타원 89" transform="translate(18 63.157)" fill="none" stroke="#7d48d9" stroke-width="8">
+      <circle cx="19" cy="19" r="19" stroke="none"/>
+      <circle cx="19" cy="19" r="15" fill="none"/>
     </g>
+    <g id="다각형_1" data-name="다각형 1" transform="translate(43 88.905) rotate(-150)" fill="#17bf33">
+      <path d="M 13.04533958435059 26.5 L 1.95466160774231 26.5 L 7.500000476837158 5.797401428222656 L 13.04533958435059 26.5 Z" stroke="none"/>
+      <path d="M 7.500000476837158 11.59481239318848 L 3.90932559967041 25 L 11.09067535400391 25 L 7.500000476837158 11.59481239318848 M 7.500000476837158 0 L 15 28 L 9.5367431640625e-07 28 L 7.500000476837158 0 Z" stroke="none" fill="#fff"/>
+    </g>
+  </g>
 </svg>

@@ -1,9 +1,10 @@
 import react, { Component } from 'react';
-import { BrowserRouter as Router,Link } from 'react-router-dom';
 import '../style/Body.css';
 
 import File from './File';
 import FileUploader from './FileUploader';
+
+
 class Body extends Component {
     
     state = {
@@ -11,6 +12,11 @@ class Body extends Component {
         index: '/',
         filelist: '',
         showFileUploader: false
+    }
+
+    constructor(props) {
+        super(props);
+        console.log(this.props);
     }
 
     componentDidUpdate() {
@@ -48,9 +54,7 @@ class Body extends Component {
     }
 
     async loadFilelist() {
-        this.indexDir(this.state.index, result => {
-            // console.log(result)
-        });
+        this.indexDir(this.state.index);
     }
 
     async FileUpload() {
@@ -60,7 +64,6 @@ class Body extends Component {
     }
 
     async indexDir(path, callback) {
-        // console.log(path)
         let indexdirectory;
         try {
 
@@ -74,16 +77,24 @@ class Body extends Component {
             indexdirectory = await indexdirectory.json();
 
         } catch (err) {
-            alert("Error while Connecting Server", err);
+            const retrytime = 10000;
+            this.Notification("error", "서버 통신 오류", `서버와 연결중 오류가 발생했습니다. ${retrytime/1000}초후 다시 연결을 시도합니다.`);
+            setTimeout(() => {
+                this.indexDir(this.state.index, () => {
+                    this.Notification("warning", "서버 온라인", "서버와 연결을 성공했습니다.");
+                });
+            }, retrytime)
             return;
         }
-        // console.log(indexdirectory.msg);
 
-        if(indexdirectory.status) {return console.log("err", indexdirectory.msg)}
+        if(indexdirectory.status) {
+            this.Notification("error", "디렉터리 로드 오류", `오류 코드: ${indexdirectory.msg.errno}`);
+            return console.log("err", indexdirectory.msg);
+        }
         this.setState({
             filelist: indexdirectory.msg
         });
-        callback(indexdirectory);
+        if (callback) callback(indexdirectory);
     }
 
     ChangeIndex(path) {
@@ -91,15 +102,20 @@ class Body extends Component {
             reloadDir: true,
             index: path
         });
-        // console.log(this.state)
+    }
+
+
+    Notification(type, err, msg) {
+        console.log(type,err,msg)
+        this.props.Notification(type, err, msg);
     }
 
     
 
     render() {
-        // this.loadFilelist();
         return (
             <div className="Body">
+                <button onClick={this.props.Notification.bind(this,"error", "경고", "테스트용 경고 메세지")}>Errortest</button>
                 {this.state.showFileUploader && <FileUploader parent={this} />}
                 <div onClick={this.GoPreviousIndex.bind(this)}>{this.state.index}</div>
                 {this.state.filelist ?

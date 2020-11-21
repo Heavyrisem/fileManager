@@ -1,9 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
-    <g>
-        <path fill="#fff" d="M0 0H80V80H0z" transform="translate(-1819) translate(1819)"/>
-        <g>
-            <path fill="#32b161" d="M2.956 0c.785-.05 3.536 11.531 2.984 12.66s-5.623 1.447-6.161.293S2.17.05 2.956 0z" transform="translate(-1819) rotate(-164 932.247 -115.748)"/>
-            <path fill="#ff4040" d="M20 4.58c2.861 0 2.938-2.435 8.259-2.435 8.57 0 13.282 8 11.741 17.252C33.358 44.522 27.183 36.9 20 36.9S7.082 44.62 0 19.4C-2.028 9.909 3.1 1.9 12.345 1.9c5.355 0 4.86 2.68 7.655 2.68z" transform="translate(-1819) translate(1839 21.07)"/>
-        </g>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
+  <g id="그룹_4588" data-name="그룹 4588" transform="translate(-1812 59)">
+    <rect id="사각형_645" data-name="사각형 645" width="10" height="10" transform="translate(1812 -59)" fill="#7d48d9"/>
+    <rect id="사각형_646" data-name="사각형 646" width="10" height="10" transform="translate(1826 -59)" fill="#7d48d9"/>
+    <rect id="사각형_647" data-name="사각형 647" width="10" height="10" transform="translate(1812 -31)" fill="#7d48d9"/>
+    <rect id="사각형_648" data-name="사각형 648" width="10" height="10" transform="translate(1840 -45)" fill="#7d48d9"/>
+    <rect id="사각형_649" data-name="사각형 649" width="10" height="10" transform="translate(1826 -45)" fill="#7d48d9"/>
+    <rect id="사각형_650" data-name="사각형 650" width="10" height="10" transform="translate(1812 -45)" fill="#7d48d9"/>
+    <rect id="사각형_651" data-name="사각형 651" width="10" height="10" transform="translate(1840 -59)" fill="#7d48d9"/>
+    <rect id="사각형_652" data-name="사각형 652" width="10" height="10" transform="translate(1840 -31)" fill="#7d48d9"/>
+    <rect id="사각형_653" data-name="사각형 653" width="10" height="10" transform="translate(1826 -31)" fill="#7d48d9"/>
+  </g>
 </svg>
