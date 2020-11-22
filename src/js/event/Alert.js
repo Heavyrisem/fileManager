@@ -5,16 +5,36 @@ import Error from '../../icons/Error.svg';
 
 class Alert extends Component {
     state = {
-        queue: [],
         showError: false,
         type: null,
         title: '',
         msg: '',
-        img: null
+        img: null,
+        timeout: null,
+        tmp: 0
     }
     
 
     Notification(type, err, msg) {
+        if (this.state.timeout != null) {
+            document.getElementById("Alert").classList.remove("open");
+            clearTimeout(this.state.timeout);
+        //     this.setState({
+        //         showError: true,
+        //         type: type,
+        //         title: err,
+        //         msg: msg,
+        //         timeout: null
+        //     }, () => {
+        //         this.Notification(type, err, msg);
+        //     });
+        }
+        document.getElementById("Alert").classList.remove("open");
+        this.state.tmp++;
+        console.log(this.state.tmp)
+        
+        
+
         this.setState({
             showError: true,
             type: type,
@@ -23,18 +43,13 @@ class Alert extends Component {
             img: (type == "warning")? Warning : Error
         }, () => {
             document.getElementById("Alert").classList.add("open");
+            this.state.timeout = setTimeout(() => {
+                document.getElementById("Alert").classList.remove("open");
+                // this.Notification();
+            }, 5000);
         });
-        
 
-        setTimeout(() => {
-            document.getElementById("Alert").classList.remove("open");
-            // this.setState({
-            //     showError: false,
-            //     type: null,
-            //     title: '',
-            //     msg: ''
-            // });
-        }, 5000);
+
     }
 
 

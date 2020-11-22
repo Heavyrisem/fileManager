@@ -95,7 +95,7 @@ class Body extends Component {
             indexdirectory = await indexdirectory.json();
 
         } catch (err) {
-            const retrytime = 10000;
+            const retrytime = 3000;
             this.Notification("error", "서버 통신 오류", `서버와 연결중 오류가 발생했습니다. ${retrytime/1000}초후 다시 연결을 시도합니다.`);
             setTimeout(() => {
                 this.indexDir(this.state.index, () => {
