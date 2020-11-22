@@ -68,6 +68,15 @@ app.post("/index", (req, res) => {
     })
 });
 
+app.post("/size", (req, res) => {
+    const path = DATAPATH+'/'+req.body.path;
+    let Timer = Date.now();
+    DirM.getDirSize(path, (err, size) => {
+        if (err) res.send({status: 1, msg: err, executeTime: Date.now() - Timer});
+        else res.send({status: 0, msg: size, executeTime: Date.now() - Timer});
+    })
+})
+
 app.post("/search", (req, res) => {
     if (req.body.keyword == null) {
         res.send({status: 1, msg: "KEYWORD_NOT_RECIVED"});
@@ -121,21 +130,21 @@ app.post("/upload/*", upload.any(), (res, req) => {
     req.send({status: 0, msg: "FILE_RECIVED"});
 });
 
-app.put("/mkdir", (res, req) => {
+app.post("/mkdir", (res, req) => {
     // res.url.replace("/mkdir", "");
     // const path = DATAPATH+res.url.split('?')[0];
-    const path = DATAPATH+'/'+req.body.path;
-    getInsideDir(path, result => {
+    const path = DATAPATH+'/'+res.body.path;
+    DirM.getInsideDir(path, result => {
         
         if (result.err) {
 
-            if (result.err.errno == -2) { // create directory
+            if (result.err.errno == -2 || -4058) { // create directory
                 fs.mkdir(path, {recursive: true}, (err, path) => {
                     if (err) req.send({status: 0, msg: err, path: path});
-                    req.send({status: 1, msg: "디렉터리가 생성되었습니다.", path: path});
+                    req.send({status: 0, msg: "디렉터리가 생성되었습니다.", path: path});
                 });
             } else {
-                req.send({status: 1, msg: err, path: path});
+                req.send({status: 1, msg: result.err, path: path});
             }
 
         } else {

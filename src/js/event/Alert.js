@@ -5,6 +5,7 @@ import Error from '../../icons/Error.svg';
 
 class Alert extends Component {
     state = {
+        queue: [],
         showError: false,
         type: null,
         title: '',

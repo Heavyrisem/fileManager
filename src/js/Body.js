@@ -1,8 +1,14 @@
 import react, { Component } from 'react';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+
+import { ByteCal } from 'unitchanger';
+
+
 import '../style/Body.css';
 
 import File from './File';
 import FileUploader from './FileUploader';
+import Disk from '../icons/Disk.svg';
 
 
 class Body extends Component {
@@ -11,7 +17,9 @@ class Body extends Component {
         reloadDir: false,
         index: '/',
         filelist: '',
-        showFileUploader: false
+        showFileUploader: false,
+        FreeDiskSpace: 1,
+        DiskSize: 1
     }
 
     constructor(props) {
@@ -27,6 +35,7 @@ class Body extends Component {
     }
     componentDidMount() {
         this.loadFilelist();
+        this.getDiskInfo();
     }
 
     async getDiskInfo() {
@@ -38,7 +47,16 @@ class Body extends Component {
           }
         });
         serverDiskfree = await serverDiskfree.json();
-        console.log(serverDiskfree);
+        if (serverDiskfree.status) {
+            this.Notification("error", "서버 통신 오류", "저장 공간의 용량을 가져오는데 실패했습니다.");
+        }
+        this.setState({
+            FreeDiskSpace: serverDiskfree.free,
+            DiskSize: serverDiskfree.size
+        }, () => {
+            console.log("disk", this.state.DiskSize/this.state.FreeDiskSpace);
+        })
+        // console.log(ByteCal(serverDiskfree.free), ByteCal(serverDiskfree.size));
     }
 
     async GoPreviousIndex() {
@@ -48,7 +66,7 @@ class Body extends Component {
             tmp = tmp.join("/");
             this.setState({
                 reloadDir: true,
-                index: tmp
+                index: (tmp == "")? "/" : tmp
             });
         } 
     }
@@ -91,6 +109,10 @@ class Body extends Component {
             this.Notification("error", "디렉터리 로드 오류", `오류 코드: ${indexdirectory.msg.errno}`);
             return console.log("err", indexdirectory.msg);
         }
+        if(indexdirectory.executeTime > 1000) {
+            this.Notification("warning", "연결 상태 불안정", `디렉터리 탐색 속도가 느립니다. 인터넷 연결을 확인하거나 디렉터리를 정리해 주세요`);
+        }
+        console.log(indexdirectory.executeTime)
         this.setState({
             filelist: indexdirectory.msg
         });
@@ -115,16 +137,38 @@ class Body extends Component {
     render() {
         return (
             <div className="Body">
-                <button onClick={this.props.Notification.bind(this,"error", "경고", "테스트용 경고 메세지")}>Errortest</button>
-                {this.state.showFileUploader && <FileUploader parent={this} />}
-                <div onClick={this.GoPreviousIndex.bind(this)}>{this.state.index}</div>
-                {this.state.filelist ?
-                    this.state.filelist.map((info, idx) => {
-                        return <File key={idx} info={info} ChangeIndex={this.ChangeIndex.bind(this)} parent={this}></File>
-                    }):
-                    <div></div>
-                }
-                <button type="button" className="UploadButton" onClick={this.FileUpload.bind(this)}>Add File</button>
+                <div className="LeftBar">
+                    <div className="DiskSpace">
+                        <img src={Disk} />
+                        <span className="DiskName">저장 공간</span>
+                        <div className="DiskFree">{ByteCal(this.state.DiskSize)+" / "+ByteCal(this.state.FreeDiskSpace)}</div>
+                        <div className="Diskprogress">
+                            <div style={{width: 100-this.state.FreeDiskSpace*100/this.state.DiskSize+"%"}}></div>
+                        </div>
+                    </div>
+                </div>
+                {/* <button onClick={this.props.Notification.bind(this,"error", "경고", "테스트용 경고 메세지")}>Errortest</button> */}
+
+                <ContextMenuTrigger id="filemanager">
+                    <div className="FileExplorer">
+                        {this.state.showFileUploader && <FileUploader parent={this} />}
+                        <div onClick={this.GoPreviousIndex.bind(this)}>{this.state.index}</div>
+                        {this.state.filelist ?
+                            this.state.filelist.map((info, idx) => {
+                                return <File key={idx} info={info} ChangeIndex={this.ChangeIndex.bind(this)} parent={this}></File>
+                            }):
+                            <div></div>
+                        }
+                        <button type="button" className="UploadButton" onClick={this.FileUpload.bind(this)}>Add File</button>
+
+                    </div>
+                </ContextMenuTrigger>
+
+                <ContextMenu id="filemanager">
+                    <MenuItem>
+                        SLKDSJLK
+                    </MenuItem>
+                </ContextMenu>
             </div>
         )
     }

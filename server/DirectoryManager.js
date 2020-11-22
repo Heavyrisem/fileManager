@@ -1,7 +1,7 @@
 const fs = require('fs');
 const pt = require('path');
 const checkdisk = require('check-disk-space');
-const unitchanger = require('unitchanger');
+const getFolderSize = require('get-folder-size');
 
 
 // 파일 업로드 O
@@ -23,16 +23,20 @@ class DManager {
 
     getFreeDiskSize(callback) {
         checkdisk(__dirname).then(info => {
-            let outdata = {
-                free: unitchanger.ByteCal(info.free),
-                size: unitchanger.ByteCal(info.size),
-                diskPath: info.diskPath
-            }
-            callback(outdata);
+            // let outdata = {
+            //     free: unitchanger.ByteCal(info.free),
+            //     size: unitchanger.ByteCal(info.size),
+            //     diskPath: info.diskPath
+            // }
+            callback(info);
         })
         .catch(err => {
             callback({err: err});
         });
+    }
+
+    getDirSize(dir, callback) {
+        getFolderSize(dir, callback);
     }
 
     removeFile(path, callback) {
