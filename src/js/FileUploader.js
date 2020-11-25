@@ -8,13 +8,22 @@ class FileUploader extends Component {
     }
 
     async onFile(e) {
-        console.log(e.target.files);
         let Keys = Object.keys(e.target.files);
         const fd = new FormData();
+        let filelist = [];
         Keys.forEach(key => {
-            fd.append("myFile", e.target.files[key]);
+            filelist.push(e.target.files[key]);
         });
-        
+        this.uploadFile(filelist);
+    }
+
+    async uploadFile(files) {
+        if (files == null) return this.props.Notification("error", "업로드 오류", "잘못된 데이터가 입력되었습니다.");
+        const fd = new FormData();
+        files.forEach((file, idx) => {
+            fd.append("myFile", file);
+        });
+
         let response = await fetch(`http://${serverAddress}:3001/upload/`+this.props.parent.state.index, {
             method: "POST",
             body: fd
@@ -30,10 +39,6 @@ class FileUploader extends Component {
         }
     }
 
-    async uploadFile(files) {
-        
-    }
-
     Close() {
         this.props.parent.setState({
             showFileUploader: false
@@ -46,6 +51,7 @@ class FileUploader extends Component {
         })
         e.stopPropagation();
         e.preventDefault();
+        let filelist = [];
         if (e.dataTransfer.items) {
             for (let i = 0; i < e.dataTransfer.items.length; i++) {
                 let data = e.dataTransfer.items[i];
@@ -53,9 +59,10 @@ class FileUploader extends Component {
                     this.props.Notification("warning", "경고", "파일만 업로드 가능합니다.");
                     return;
                 }
-
-                console.log(e.dataTransfer.items[i].getAsFile());
+                filelist.push(e.dataTransfer.items[i].getAsFile());
+                // console.log(e.dataTransfer.items[i].getAsFile(), typeof e.dataTransfer.items[i].getAsFile());
             }
+            this.uploadFile(filelist);
             // console.log(e.dataTransfer.items)
             // e.dataTransfer.items.forEach((data, idx) => {
             //     console.log(data)
