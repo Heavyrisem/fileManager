@@ -12,7 +12,8 @@ class File extends Component {
         }
     }
 
-    async removeFile() {
+    removeFile = async (e) => {
+        e.stopPropagation();
         let response = await fetch(`http://${serverAddress}:3001/remove`, {
             method: "POST",
             body: JSON.stringify({path: this.props.info.path.replace("../", "").replace("DATA", "").replace("//", "")}),
@@ -40,8 +41,8 @@ class File extends Component {
         return (
             <div onClick={this.changeIDX.bind(this)}>
                 {this.props.info.name} {unitchanger.ByteCal(this.props.info.size)}
-                {this.props.info.isFile&& <button onClick={this.removeFile.bind(this)}>Remove</button>}
-                {this.props.info.isFile&& <button onClick={this.downloadFile.bind(this)}>Download</button>}
+                <button onClick={this.removeFile}>Remove</button>
+                {!this.props.info.isFile&& <button onClick={this.downloadFile.bind(this)}>Download</button>}
             </div>
         )
     }

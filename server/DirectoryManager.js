@@ -39,6 +39,10 @@ class DManager {
         getFolderSize(dir, callback);
     }
 
+    removeDir(path, callback) {
+        
+    }
+
     removeFile(path, callback) {
         this.detailDataInfo(path, (err, result) => {
             if (err) return callback({err: err});

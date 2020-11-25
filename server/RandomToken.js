@@ -17,6 +17,11 @@ function RandomToken() {
 }
 
 
+// alskdjfkej
+// alskd jfkej
+
+
+// 중복 확률 테스트
 let tot = 500;
 let loop = 0;
 let last = [];
