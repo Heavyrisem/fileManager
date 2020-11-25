@@ -1,0 +1,15 @@
+.ContextMenuRoot {
+    box-shadow: #ececec 0 3px 10px 0px;
+    background-color: white;
+    position: absolute;
+    /* display: none; */
+}
+.ContextMenu {
+    padding: .4rem .6rem;
+
+    transition: background-color 0.3s;
+}
+.ContextMenu:hover {
+    background-color: #ddd;
+}
+

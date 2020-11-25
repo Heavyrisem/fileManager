@@ -1,7 +1,8 @@
 import react, { Component } from 'react';
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import ContextMenu from './event/ContextMenu';
 
 import { ByteCal } from 'unitchanger';
+import { serverAddress } from './config.json';
 
 
 import '../style/Body.css';
@@ -9,6 +10,15 @@ import '../style/Body.css';
 import File from './File';
 import FileUploader from './FileUploader';
 import Disk from '../icons/Disk.svg';
+
+function fetchWithtimeout (url, options, timeout = 7000) {
+    return Promise.race([
+        fetch(url, options),
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('timeout')), timeout)
+        )
+    ]);
+}
 
 
 class Body extends Component {
@@ -19,7 +29,8 @@ class Body extends Component {
         filelist: '',
         showFileUploader: false,
         FreeDiskSpace: 1,
-        DiskSize: 1
+        DiskSize: 1,
+        showContext: false
     }
 
     constructor(props) {
@@ -39,16 +50,24 @@ class Body extends Component {
     }
 
     async getDiskInfo() {
-        let serverDiskfree = await fetch("http://localhost:3001/diskinfo", {
-          method: "POST",
-          body: JSON.stringify({path: '/'}),
-          headers: {
-                  'content-type': 'application/json'
-          }
-        });
-        serverDiskfree = await serverDiskfree.json();
+        let serverDiskfree;
+        try {
+            serverDiskfree = await fetchWithtimeout(`http://${serverAddress}:3001/diskinfo`, {
+              method: "POST",
+              body: JSON.stringify({path: '/'}),
+              headers: {
+                      'content-type': 'application/json'
+              }
+            }, 3000);
+            serverDiskfree = await serverDiskfree.json();
+
+        } catch(err) {
+            this.Notification("error", "서버 통신 오류", "서버 스토리지의 용량을 가져오는데 실패했습니다.");
+            return;
+        }
+
         if (serverDiskfree.status) {
-            this.Notification("error", "서버 통신 오류", "저장 공간의 용량을 가져오는데 실패했습니다.");
+            this.Notification("error", "서버 통신 오류", "서버 스토리지의 용량을 가져오는데 실패했습니다.");
         }
         this.setState({
             FreeDiskSpace: serverDiskfree.free,
@@ -77,7 +96,8 @@ class Body extends Component {
 
     async FileUpload() {
         this.setState({
-            showFileUploader: true
+            showFileUploader: true,
+            showContext: false
         })
     }
 
@@ -85,7 +105,7 @@ class Body extends Component {
         let indexdirectory;
         try {
 
-            indexdirectory = await fetch("http://localhost:3001/index", {
+            indexdirectory = await fetch(`http://${serverAddress}:3001/index`, {
                 method: "POST",
                 body: JSON.stringify({path: path}),
                 headers: {
@@ -112,9 +132,11 @@ class Body extends Component {
         if(indexdirectory.executeTime > 1000) {
             this.Notification("warning", "연결 상태 불안정", `디렉터리 탐색 속도가 느립니다. 인터넷 연결을 확인하거나 디렉터리를 정리해 주세요`);
         }
-        console.log(indexdirectory.executeTime)
+        console.log("indexTime:", indexdirectory.executeTime);
         this.setState({
-            filelist: indexdirectory.msg
+            filelist: indexdirectory.msg.sort((a,b) => {
+                return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+            })
         });
         if (callback) callback(indexdirectory);
     }
@@ -132,9 +154,39 @@ class Body extends Component {
         this.props.Notification(type, err, msg);
     }
 
-    
+    showContext = (e) => {
+        console.log(e.pageX, e.pageY);
+        e.preventDefault();
+        this.setState({
+            showContext: true,
+            showFileUploader: false,
+            ContextPos: {X: e.pageX, Y: e.pageY}
+        });
+    }
+
+    hideContext() {
+        console.log("hide")
+        this.setState({
+            showContext: false,
+            // showFileUploader: false,
+        });
+    }
+
+    test() {
+        console.log("EVENT");
+    }
 
     render() {
+        const ContextList = [
+            {
+                name: "파일 업로드",
+                handler: this.FileUpload.bind(this)
+            },
+            {
+                name: "디렉터리 생성",
+                handler: this.test.bind(this)
+            }
+        ]
         return (
             <div className="Body">
                 <div className="LeftBar">
@@ -147,28 +199,21 @@ class Body extends Component {
                         </div>
                     </div>
                 </div>
-                {/* <button onClick={this.props.Notification.bind(this,"error", "경고", "테스트용 경고 메세지")}>Errortest</button> */}
-
-                <ContextMenuTrigger id="filemanager">
-                    <div className="FileExplorer">
-                        {this.state.showFileUploader && <FileUploader parent={this} />}
-                        <div onClick={this.GoPreviousIndex.bind(this)}>{this.state.index}</div>
+                
+                {this.state.showContext&& <ContextMenu pos={this.state.ContextPos} menus={ContextList}></ContextMenu>}
+                    <div className="FileExplorer" onClick={this.hideContext.bind(this)} onContextMenu={this.showContext}>
+                        {this.state.showFileUploader && <FileUploader parent={this} Notification={this.Notification.bind(this)}/>}
+                        <div onClick={this.GoPreviousIndex.bind(this)}>현재 디렉터리 {this.state.index}
+                            <button style={{float: "right"}} type="button" className="UploadButton" onClick={this.FileUpload.bind(this)}>Add File</button>
+                        </div>
                         {this.state.filelist ?
                             this.state.filelist.map((info, idx) => {
                                 return <File key={idx} info={info} ChangeIndex={this.ChangeIndex.bind(this)} parent={this}></File>
                             }):
                             <div></div>
                         }
-                        <button type="button" className="UploadButton" onClick={this.FileUpload.bind(this)}>Add File</button>
 
                     </div>
-                </ContextMenuTrigger>
-
-                <ContextMenu id="filemanager">
-                    <MenuItem>
-                        SLKDSJLK
-                    </MenuItem>
-                </ContextMenu>
             </div>
         )
     }

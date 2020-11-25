@@ -1,5 +1,6 @@
 import react, { Component } from 'react';
 import unitchanger from 'unitchanger';
+import { serverAddress } from './config.json';
 
 class File extends Component {
     changeIDX() {
@@ -12,7 +13,7 @@ class File extends Component {
     }
 
     async removeFile() {
-        let response = await fetch("http://localhost:3001/remove", {
+        let response = await fetch(`http://${serverAddress}:3001/remove`, {
             method: "POST",
             body: JSON.stringify({path: this.props.info.path.replace("../", "").replace("DATA", "").replace("//", "")}),
             headers: {
@@ -31,7 +32,7 @@ class File extends Component {
     }
 
     async downloadFile() {
-        const downloadurl = "http://localhost:3001/download?path=/"+this.props.info.path.replace("../", "").replace("DATA", "").replace("//", "");
+        const downloadurl = `http://${serverAddress}:3001/download?path=/`+this.props.info.path.replace("../", "").replace("DATA", "").replace("//", "");
         window.open(downloadurl);
     }
 

@@ -66,3 +66,16 @@
     display: inline-block;
     transform: translateY(150%);
 }
+
+@media screen and (max-width: 1600px) {
+    .DiskFree {
+        transform: none !important;
+    }
+}
+
+
+.FileExplorer {
+    width: 100%;
+}
+
+

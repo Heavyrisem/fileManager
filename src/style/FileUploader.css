@@ -3,11 +3,38 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 30%;
-    min-height: 50%;
+    width: 30%;
+    height: 50%;
+    z-index: 9999;
     background-color: aliceblue;
 
     text-align: center;
     align-items: center;
 
+    transition: background-color 0.3s;
+    /* padding: 2%; */
+}
+
+.dragBox {
+    /* position: absolute; */
+    /* padding: 2.5%; */
+    /* padding-left: 2.5%;
+    padding-top: 2.5%; */   
+    /* display: inline-block; */
+    width: 100%;
+    height: 100%;
+    /* border: dashed .5rem rgb(94, 94, 94); */
+    /* border-radius: 2rem; */
+    background-color: rgb(122, 122, 122); 
+    z-index: 1;
+
+    display: flex;
+}
+
+.dragBox span {
+    margin: auto;
+}
+
+.hover {
+    background-color: rgb(209, 233, 255);
 }
