@@ -6,6 +6,17 @@ const DirM = require('./DirectoryManager');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const app = express();
+
+const sqlite3 = require('sqlite3').verbose();
+const DB = new sqlite3.Database(__dirname+'/server.db', sqlite3.OPEN_READWRITE, err => {
+    if (err) {
+        console.log(`Error while Opening DB ${err}`);
+    } else {
+        console.log(`Database Connected`);
+    }
+});
+
+
 app.use(cors());
 // DirM.init(DATAPATH);
 // let Timer = Date.now();
@@ -158,12 +169,22 @@ app.post("/mkdir", (res, req) => {
 
 
 app.post("/register", (req, res) => {
-    const id = req.body.id;
-    const pw = req.body.pw;
+    const TKgen = require('./RandomToken');
+    const name = req.body.name;
+    const passwd = req.body.passwd;
+    console.log("rd");
+    DB.run(`INSERT INTO UserInfo(name, passwd, token) VALUES(${name}, ${passwd}, ${TKgen()})`, err => {
+        if (err) return console.log(`Error INSERTING ${err}`);
+        else console.log("SUCCESS");
+    })
     
+    // DB.get("SELECT * FROM UserInfo WHERE name='usr1'", (err, row) => {
+    //     if (err) return console.log(`Error get userinfo ${err}`);
+    //     console.log(row);
+    // })
     
 
-    res.status(500).send("not ready");
+    res.send("not ready");
 })
 
 app.post("/login", (req, res) => {

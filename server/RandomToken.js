@@ -1,5 +1,5 @@
 function RandomToken() {
-    const length = 3;
+    const length = 10;
     let result = "";
 
 
@@ -15,7 +15,7 @@ function RandomToken() {
 
     return result;
 }
-
+module.exports = RandomToken;
 
 // alskdjfkej
 // alskd jfkej
