@@ -86,30 +86,27 @@ class DManager {
         })
     }
     
-    // searchByName(name, rootPath, callback) {
-    //     this.getInsideDir(rootPath, list => {
-    //         let found = [];
-            
-    //         list.forEach(async (data, idx) => {
-    //             if (data.name.indexOf(name) != -1) {
-    //                 found.push(data);
-    //             }
-    //             if (!data.isFile) {
-    //                 console.log('Search ' + data.path);
-    //                 this.searchByName(name, data.path, result => {
-    //                     found = found.concat(result);
-    //                     console.log('found', found);
+    mkdir(path, callback) {
+        
+        this.getInsideDir(path, result => {
+            if (result.err) {
 
-    //                     // if (list.length == idx+1) callback(found);
-    //                 });
-    //             }
-    //             if (list.length == idx+1) callback(found);
-    //             console.log(list.length, idx);
-    //         });
-    //         // console.log("found", found);
-    //         // callback(found);
-    //     });
-    // }
+                if (result.err.errno == -2 || -4058) { // create directory
+                    fs.mkdir(path, {recursive: true}, (err, path) => {
+                        if (err) return callback(err, undefined);
+                        callback(undefined, path);
+                    });
+                } else {
+                    callback(result.err, undefined);
+                }
+
+            } else {
+
+                callback("DIR_OVERLAP", undefined);
+
+            }
+        });
+    }
 
     getInsideDir(path, callback) {
         let dirlist = [];

@@ -7,15 +7,17 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const app = express();
 
+
+const SHA256 = require('./SHA256');
+const { mkdir } = require('./DirectoryManager');
 const sqlite3 = require('sqlite3').verbose();
-const DB = new sqlite3.Database(__dirname+'/server.db', sqlite3.OPEN_READWRITE, err => {
+const DB = new sqlite3.Database('./DB/server.db', sqlite3.OPEN_READWRITE, err => {
     if (err) {
         console.log(`Error while Opening DB ${err}`);
     } else {
         console.log(`Database Connected`);
     }
 });
-
 
 app.use(cors());
 // DirM.init(DATAPATH);
@@ -141,54 +143,65 @@ app.post("/upload/*", upload.any(), (res, req) => {
     req.send({status: 0, msg: "FILE_RECIVED"});
 });
 
-app.post("/mkdir", (res, req) => {
-    // res.url.replace("/mkdir", "");
-    // const path = DATAPATH+res.url.split('?')[0];
-    const path = DATAPATH+'/'+res.body.path;
-    DirM.getInsideDir(path, result => {
-        
-        if (result.err) {
+app.post("/mkdir", (req, res) => {
+    const path = DATAPATH+'/'+req.body.path;
 
-            if (result.err.errno == -2 || -4058) { // create directory
-                fs.mkdir(path, {recursive: true}, (err, path) => {
-                    if (err) req.send({status: 0, msg: err, path: path});
-                    req.send({status: 0, msg: "디렉터리가 생성되었습니다.", path: path});
-                });
-            } else {
-                req.send({status: 1, msg: result.err, path: path});
-            }
+    DirM.mkdir(path, (err, path) => {
+        if (err) return res.send({status: 1, msg: err});
 
-        } else {
-
-            req.send({status: 1, msg: "DIR_OVERLAP", path: path});
-
-        }
-    });
-    
+        res.send({status: 0, msg: "DIR_CREATED", path: path});
+    });    
 });
 
 
 app.post("/register", (req, res) => {
-    const TKgen = require('./RandomToken');
     const name = req.body.name;
-    const passwd = req.body.passwd;
-    console.log("rd");
-    DB.run(`INSERT INTO UserInfo(name, passwd, token) VALUES(${name}, ${passwd}, ${TKgen()})`, err => {
-        if (err) return console.log(`Error INSERTING ${err}`);
-        else console.log("SUCCESS");
-    })
-    
-    // DB.get("SELECT * FROM UserInfo WHERE name='usr1'", (err, row) => {
-    //     if (err) return console.log(`Error get userinfo ${err}`);
-    //     console.log(row);
-    // })
-    
+    const passwd = SHA256(req.body.passwd);
 
-    res.send("not ready");
-})
+    DB.all(`SELECT * FROM UserInfo WHERE name="${name}"`, (err, rows) => {
+        if (err) return console.log(`ERROR GET ${err}`);
+
+        if (rows.length != 0) {
+            return res.send({status: 1, msg: "USER_EXISTS"});
+        } else {
+            DB.run(`INSERT INTO UserInfo(name, passwd) VALUES("${name}", "${passwd}")`, err => {
+                if (err) {
+                    return console.log(`Error INSERTING ${err}`, `INSERT INTO UserInfo(name, passwd) VALUES("${name}", "${passwd}")`);
+                } else {
+                    DirM.mkdir(`${DATAPATH}/home/${name}`, (err, path) => {
+                        if (err) res.send({status: 1, msg: "Initialization_HOME_DIR"});
+                        else DirM.mkdir(`${DATAPATH}/trash/${name}`, (err, path) => {
+                            if (err) res.send({status: 1, msg: "Initialization_TRASH_DIR"});
+                            else res.send({status: 0, msg: "SUCCESS"});
+                        });
+                    });
+                } 
+            });
+        }
+
+    });
+    
+});
 
 app.post("/login", (req, res) => {
-    console.log()
+    const name = req.body.name;
+    const passwd = SHA256(req.body.passwd);
+
+    DB.all(`SELECT * FROM UserInfo WHERE name="${name}"`, (err, rows) => {
+        if (err) return console.log(`ERROR GET ${err}`);
+
+        if (rows.length == 0) return res.send({status:1, msg: "NAME_WRONG"});
+
+        let foundUserinfo;
+        rows.forEach(info => {
+            if (info.passwd == passwd) {
+                foundUserinfo = info;
+            }
+        });
+
+        if (foundUserinfo != null) return res.send({status: 0, name: foundUserinfo.name});
+        else return res.send({status: 1, msg: "PASSWORD_WRONG"});
+    });
 })
 
 

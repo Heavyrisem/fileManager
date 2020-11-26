@@ -21,30 +21,30 @@ module.exports = RandomToken;
 // alskd jfkej
 
 
-// 중복 확률 테스트
-let tot = 500;
-let loop = 0;
-let last = [];
-let acc = [];
-for (var i = 0; i < tot; i++) {
+// // 중복 확률 테스트
+// let tot = 500;
+// let loop = 0;
+// let last = [];
+// let acc = [];
+// for (var i = 0; i < tot; i++) {
 
-    while (1) {
-        loop++;
-        let tmp = RandomToken();
-        if (last.indexOf(tmp) != -1) {
-            acc.push(1/loop*100);
-            // console.log(1/loop*100);
-            break;
-        } else {
-            last.push(tmp);
-        }
-    }
-    console.log(`${i} 번째 루프`);
-}
-{
-    let tmp = 0;
-    acc.forEach(ac => {
-        tmp += ac;
-    });
-    console.log(`중복 확률 ${tmp/tot}%`);
-}
+//     while (1) {
+//         loop++;
+//         let tmp = RandomToken();
+//         if (last.indexOf(tmp) != -1) {
+//             acc.push(1/loop*100);
+//             // console.log(1/loop*100);
+//             break;
+//         } else {
+//             last.push(tmp);
+//         }
+//     }
+//     console.log(`${i} 번째 루프`);
+// }
+// {
+//     let tmp = 0;
+//     acc.forEach(ac => {
+//         tmp += ac;
+//     });
+//     console.log(`중복 확률 ${tmp/tot}%`);
+// }
