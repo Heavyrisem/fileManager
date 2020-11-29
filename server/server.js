@@ -7,9 +7,8 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const app = express();
 
-
+const RandomToken = require('./RandomToken');
 const SHA256 = require('./SHA256');
-const { mkdir } = require('./DirectoryManager');
 const sqlite3 = require('sqlite3').verbose();
 const DB = new sqlite3.Database('./DB/server.db', sqlite3.OPEN_READWRITE, err => {
     if (err) {
@@ -23,15 +22,15 @@ app.use(cors());
 // DirM.init(DATAPATH);
 // let Timer = Date.now();
 // DirM.searchByName('test', DATAPATH).then(result => {
-//     console.log(`검색 소요 시간 : ${Date.now() - Timer}ms, 일치하는 결과 ${result.length} 개 발견`)
+//     console.log(`검색 소요 시간 : ${Date.now() - Timer}ms, 일치하는 결과 ${result.res.length} 개 발견, ${result.counter}개의 데이터 탐색`)
 //     // console.log(result);
 // })
+
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
-
 
 const upload = multer({
     storage: multer.diskStorage({
@@ -58,7 +57,7 @@ const upload = multer({
                     if (filelist.name+filelist.type == file.fieldname) return console.log("파일 중복됨"); // req.send(오류 발생 필요)
                 });
                 cb(null, file.originalname);
-                console.log(req);
+                // console.log(req);
             });
         }
     })
@@ -124,6 +123,7 @@ app.post("/diskinfo", (res, req) => {
 app.get("/download", (res, req) => {
     // res.url = res.url.replace("/download", "");
     const path = DATAPATH+res.query.path;
+    console.log(`다운로드 요청: ${path}`);
     // const path = DATAPATH+'/'+res.body.path;
 
     DirM.detailDataInfo(path, (err, info) => {
@@ -164,15 +164,16 @@ app.post("/register", (req, res) => {
         if (rows.length != 0) {
             return res.send({status: 1, msg: "USER_EXISTS"});
         } else {
-            DB.run(`INSERT INTO UserInfo(name, passwd) VALUES("${name}", "${passwd}")`, err => {
+            const token = RandomToken(30);
+            DB.run(`INSERT INTO UserInfo(name, passwd, token) VALUES("${name}", "${passwd}", "${token}")`, err => {
                 if (err) {
-                    return console.log(`Error INSERTING ${err}`, `INSERT INTO UserInfo(name, passwd) VALUES("${name}", "${passwd}")`);
+                    return res.send({status: 1, msg: "DB_QUERY ERROR"});
                 } else {
                     DirM.mkdir(`${DATAPATH}/home/${name}`, (err, path) => {
                         if (err) res.send({status: 1, msg: "Initialization_HOME_DIR"});
                         else DirM.mkdir(`${DATAPATH}/trash/${name}`, (err, path) => {
                             if (err) res.send({status: 1, msg: "Initialization_TRASH_DIR"});
-                            else res.send({status: 0, msg: "SUCCESS"});
+                            else res.send({status: 0, msg: "SUCCESS", name: name, token: token});
                         });
                     });
                 } 
@@ -199,7 +200,7 @@ app.post("/login", (req, res) => {
             }
         });
 
-        if (foundUserinfo != null) return res.send({status: 0, name: foundUserinfo.name});
+        if (foundUserinfo != null) return res.send({status: 0, name: foundUserinfo.name, token: foundUserinfo.token});
         else return res.send({status: 1, msg: "PASSWORD_WRONG"});
     });
 })

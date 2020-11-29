@@ -1,0 +1,22 @@
+.FileExplorer {
+    width: 100%;
+}
+
+.PathFinder {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100%;
+    background-color: #F6F1FF;
+    color: #707070;
+
+    font-size: 1.3rem;
+
+    padding: .7rem 0;
+    padding-left: 1.5rem;
+}
+.PathFinder * {
+    margin: 0 .5rem;
+}
+.PathFinder span {
+    vertical-align: top;
+}

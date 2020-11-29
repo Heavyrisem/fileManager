@@ -1,22 +1,29 @@
-function RandomToken() {
-    const length = 10;
+function RandomToken(length) {
     let result = "";
 
 
     const min = 97;
     const max = 122;
     for (var i = 0; i < length; i++) {
-        if (Math.floor(Math.random() * 2)) {
-            result += String.fromCharCode(Math.floor(Math.random() * (max - min) + min));
-        } else {
-            result += String.fromCharCode(Math.floor(Math.random() * (max - min) + min)).toUpperCase();
+        switch (Math.floor(Math.random() * 3)) {
+            case 0: {
+                result += String.fromCharCode(Math.floor(Math.random() * (max - min) + min));
+                break;
+            }
+            case 1: {
+                result += String.fromCharCode(Math.floor(Math.random() * (max - min) + min)).toUpperCase();
+                break;
+            }
+            case 2: {
+                result += Math.floor(Math.random() * 10) + "";
+                break;
+            }
         }
     }
 
     return result;
 }
 module.exports = RandomToken;
-
 // alskdjfkej
 // alskd jfkej
 

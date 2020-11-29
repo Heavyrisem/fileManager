@@ -5,7 +5,7 @@ import { serverAddress } from './config.json';
 class File extends Component {
     changeIDX() {
         if (this.props.info.isFile == false) {
-            console.log(this.props.info.path);
+            // console.log(this.props.info.path);
             
             this.props.ChangeIndex(this.props.info.path.replace("../", "").replace("DATA", "").replace("//", ""));
             // console.log(this.props.parent.state)
@@ -40,9 +40,9 @@ class File extends Component {
     render() {
         return (
             <div onClick={this.changeIDX.bind(this)}>
-                {this.props.info.name} {unitchanger.ByteCal(this.props.info.size)}
+                {this.props.info.name} {this.props.info.isFile&& unitchanger.ByteCal(this.props.info.size)}
                 <button onClick={this.removeFile}>Remove</button>
-                {!this.props.info.isFile&& <button onClick={this.downloadFile.bind(this)}>Download</button>}
+                {this.props.info.isFile&& <button onClick={this.downloadFile.bind(this)}>Download</button>}
             </div>
         )
     }

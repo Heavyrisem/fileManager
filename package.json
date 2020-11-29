@@ -20,6 +20,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
+    "sqlite3": "^5.0.0",
     "unitchanger": "^2.0.1",
     "web-vitals": "^0.2.4"
   },

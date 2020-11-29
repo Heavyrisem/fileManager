@@ -64,23 +64,27 @@ class DManager {
     searchByName(name ,rootPath, deep) {
         return new Promise((resolve, reject) => {
             if (deep == undefined) deep = 0;
+            let filecounter = 0;
 
             this.getInsideDir(rootPath, async list => {
                 let found = [];
                 
                 await Promise.all(list.map(async (data, idx) => {
+                    filecounter++;
                     if (data.name.indexOf(name) != -1) {
                         found.push(data);
                     }
                     if (!data.isFile) {
                         // console.log('Search ' + data.path);
                         let tmp = await this.searchByName(name, data.path, deep+1);
-                        found = found.concat(tmp);
+                        filecounter += tmp.counter;
+                        found = found.concat(tmp.res);
                     }
 
                     // console.log(`${found.length} 개 결과 찾음, ${deep} 깊이 탐색`);
                 }));
-                resolve(found);
+
+                resolve({res: found, counter: filecounter});
             });
 
         })
