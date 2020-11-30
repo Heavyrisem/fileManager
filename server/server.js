@@ -123,12 +123,19 @@ app.post("/diskinfo", (res, req) => {
 app.get("/download", (res, req) => {
     // res.url = res.url.replace("/download", "");
     const path = DATAPATH+res.query.path;
-    console.log(`다운로드 요청: ${path}`);
+    console.log(`다운로드 요청: ${decodeURI(path)}`);
     // const path = DATAPATH+'/'+res.body.path;
 
-    DirM.detailDataInfo(path, (err, info) => {
+    DirM.detailDataInfo(decodeURI(path), (err, info) => {
         if (err) return req.send({status: 1, msg: err});
-        else return req.download(path);
+        if (!info.isFile) {
+            DirM.compressDir(path, (err, info) => {
+                console.log('executeTime: ', info.executeTime, 'ms');
+                return req.download(info.path);
+            })
+        } else {
+            return req.download(path);
+        }
     });
 })
 

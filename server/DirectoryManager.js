@@ -1,5 +1,6 @@
 const fs = require('fs');
-const pt = require('path');
+const pt = require('path')
+const archiver = require('archiver');
 const checkdisk = require('check-disk-space');
 const getFolderSize = require('get-folder-size');
 
@@ -39,8 +40,34 @@ class DManager {
         getFolderSize(dir, callback);
     }
 
-    removeDir(path, callback) {
-        
+    compressDir(path, callback) {
+        try {
+            const archive = archiver('tar', {
+                zlib: {
+                  level: 1
+                }
+            })
+            const output = fs.createWriteStream(`${this.root_path}/temp/${Date.now()}.tar`);
+            const Timer = Date.now();
+            
+            console.log("compressing")
+            archive.on('error', function(err) {
+                throw err;
+            });
+            output.on('end', function() {
+              console.log('Data has been drained');
+            });
+            output.on('close', function() {
+                console.log("end")
+                return callback(undefined, {path: output.path, executeTime: Date.now()-Timer});
+            });
+            console.log(path)
+            archive.directory(path, false);
+            archive.finalize();
+            archive.pipe(output);
+        } catch(err) {
+            callback(err, undefined);
+        }
     }
 
     removeFile(path, callback) {

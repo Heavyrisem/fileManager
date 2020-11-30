@@ -40,7 +40,7 @@ class File extends Component {
     render() {
         return (
             <div onClick={this.changeIDX.bind(this)}>
-                {this.props.info.name} {this.props.info.isFile&& unitchanger.ByteCal(this.props.info.size)}
+                {this.props.info.name} {unitchanger.ByteCal(this.props.info.size)}
                 <button onClick={this.removeFile}>Remove</button>
                 {this.props.info.isFile&& <button onClick={this.downloadFile.bind(this)}>Download</button>}
             </div>

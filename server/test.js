@@ -1,35 +1,22 @@
+const os = require('os');
+const cpuStat = require('cpu-stat');
+const unit = require('unitchanger');
 
-const fs = require('fs');
-const archiver = require('archiver');
-
-const output = fs.createWriteStream(__dirname + '/example.zip');
-const archive = archiver('zip', {
-    zlib: { level: 9 }
-})
-
-output.on('close', function() {
-  console.log(archive.pointer() + ' total bytes');
-  console.log('archiver has been finalized and the output file descriptor has closed.');
-});
-
-output.on('end', function() {
-  console.log('Data has been drained');
-});
-
-archive.on('warning', function(err) {
-  if (err.code === 'ENOENT') {
-    // log warning
-  } else {
-    // throw error
-    throw err;
+const cpu = {
+  Core: { 
+    name: os.cpus()[0].model,
+    speed: os.cpus()[0].speed,
+    core: os.cpus().length
   }
-});
+}
 
-archive.on('error', function(err) {
-  throw err;
-});
- 
-archive.directory('../DATA', false);
-archive.finalize();
+console.log();
+console.log("CPU INFO", cpu);
+setInterval(() => {
 
-archive.pipe(output);
+  cpuStat.usagePercent((err, percent, seconds) => {
+    console.log(unit.ByteCal(os.totalmem()), unit.ByteCal(os.freemem()));
+    console.log(percent, seconds);
+  })
+
+}, 500);
