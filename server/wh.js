@@ -97,7 +97,7 @@ async function Prepare(req, res) {
                     });
                     break;
                 }
-                case "darwin": {
+                case "linux": {
                     
                     let build = exec('npm run build', (err, stdout, stderr) => {
                         if (err) {
