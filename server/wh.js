@@ -96,7 +96,7 @@ async function Prepare(req, res) {
     });
 }
 
-app.get("/wh", async (req, res) => {
+app.post("/wh", async (req, res) => {
     Prepare(req, res);
 });
 
