@@ -4,9 +4,11 @@ const app = express();
 
 app.get("/wh", (req, res) => {
     console.log("get", req.body);
+    res.send("success");
 });
 app.post("/wh", (req, res) => {
     console.log("post", req.body);
+    res.send("success");
 });
 
 app.listen(3001, () => {
