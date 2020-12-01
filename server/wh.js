@@ -34,7 +34,7 @@ function startServer(platform) {
             break;
 
         }
-        case "darwin": {
+        case "linux": {
 
             serverOnline = true;
             service = spawn("cmd", ['/C','serve' ,'-s', '../build', '-l', servicePort, '-n']);
