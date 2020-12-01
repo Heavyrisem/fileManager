@@ -30,6 +30,7 @@ function startServer(platform) {
             serverOnline = true;
             service = spawn("cmd", ['/C','serve' ,'-s', '../build', '-l', servicePort, '-n']);
             service.stdout.on("data", (chunk) => {console.log(chunk+"")});
+            console.log("Server started");
             break;
 
         }
