@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const { exec, spawn } = require('child_process');
 const kill = require('kill-port');
-const servicePort = 3000;
+const servicePort = 80;
 
 let service;
 let preparing = false;
