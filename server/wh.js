@@ -67,7 +67,7 @@ async function Prepare(req, res) {
     }
     preparing = true;
 
-    let timer = new Date.now();
+    let timer = Date.now();
     console.log("---------- New Commit has Arrive ----------");
     // console.log(`${now.getFullYear()}/${now.getMonth()}/${now.getDate()} ${now.getHours()}:${now.getDate()}:${now.getSeconds()}`);
     exec('git pull', async (err, stdout, stderr) => {
