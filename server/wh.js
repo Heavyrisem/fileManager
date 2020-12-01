@@ -67,9 +67,9 @@ async function Prepare(req, res) {
     }
     preparing = true;
 
-    let now = new Date();
+    let timer = new Date.now();
     console.log("---------- New Commit has Arrive ----------");
-    console.log(`${now.getFullYear()}/${now.getMonth()}/${now.getDate()} ${now.getHours()}:${now.getDate()}:${now.getSeconds()}`);
+    // console.log(`${now.getFullYear()}/${now.getMonth()}/${now.getDate()} ${now.getHours()}:${now.getDate()}:${now.getSeconds()}`);
     exec('git pull', async (err, stdout, stderr) => {
         if (err) {
             res.send({status: "GIT_PULL_ERR", err: err});
@@ -82,6 +82,7 @@ async function Prepare(req, res) {
             await stopServer();
             switch (process.platform) {
                 case "win32": {
+
                     let build = exec('npm run winBuild', (err, stdout, stderr) => {
                         if (err) {
                             res.send({status: "BUILD_ERROR", err: err});
@@ -89,13 +90,14 @@ async function Prepare(req, res) {
                             build.kill();
                             return;
                         }
-                        console.log(`-------------- Build Sucess, ${process.platform} --------------`);
+                        console.log(`-------------- Build Sucess, ${process.platform}, executetime: ${Date.now()-timer}ms --------------`);
                         res.send({status: "BUILD_SUCESS"});
 
                         preparing = false;
                         startServer(process.platform);
                     });
                     break;
+
                 }
                 case "linux": {
                     
