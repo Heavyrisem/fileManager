@@ -37,7 +37,7 @@ function startServer(platform) {
         case "linux": {
 
             serverOnline = true;
-            service = spawn("sudo sh run.sh");
+            service = spawn("sh", ['run.sh']);
             service.stdout.on("data", (chunk) => {console.log(chunk+"")});
             console.log("Server started");
             break;
