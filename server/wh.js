@@ -36,6 +36,12 @@ function startServer(platform) {
         }
         case "darwin": {
 
+            serverOnline = true;
+            service = spawn("cmd", ['/C','serve' ,'-s', '../build', '-l', servicePort, '-n']);
+            service.stdout.on("data", (chunk) => {console.log(chunk+"")});
+            console.log("Server started");
+            break;
+
         }
         default: console.log("This platform is not support!"); break;
     }
@@ -90,6 +96,24 @@ async function Prepare(req, res) {
                         startServer(process.platform);
                     });
                     break;
+                }
+                case "darwin": {
+                    
+                    let build = exec('npm run build', (err, stdout, stderr) => {
+                        if (err) {
+                            res.send({status: "BUILD_ERROR", err: err});
+                            console.log("Build Error", err);
+                            build.kill();
+                            return;
+                        }
+                        console.log(`-------------- Build Sucess, ${process.platform} --------------`);
+                        res.send({status: "BUILD_SUCESS"});
+
+                        preparing = false;
+                        startServer(process.platform);
+                    });
+                    break;
+
                 }
                 default: console.log("This platform is not support!"); break;
             }
