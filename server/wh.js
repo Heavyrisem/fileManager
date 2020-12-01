@@ -3,10 +3,10 @@ const app = express();
 
 
 app.get("/wh", (req, res) => {
-    console.log(req.body);
+    console.log("get", req.body);
 });
 app.post("/wh", (req, res) => {
-    console.log(req.body);
+    console.log("post", req.body);
 });
 
 app.listen(3001, () => {
