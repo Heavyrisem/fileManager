@@ -16,6 +16,6 @@ app.post("/wh", (req, res) => {
     res.send("success");
 });
 
-app.listen(3001, () => {
-    console.log("webhook server is open");
+app.listen(3002, () => {
+    console.log("webhook server is open 3002");
 })
