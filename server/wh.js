@@ -19,4 +19,3 @@ app.post("/wh", (req, res) => {
 app.listen(3001, () => {
     console.log("webhook server is open");
 })
-//웹훅테스트
