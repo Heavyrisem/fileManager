@@ -108,7 +108,7 @@ async function Prepare(req, res) {
                             build.kill();
                             return;
                         }
-                        console.log(`-------------- Build Sucess, ${process.platform} --------------`);
+                        console.log(`-------------- Build Sucess, ${process.platform}, executetime: ${Date.now()-timer}ms --------------`);
                         res.send({status: "BUILD_SUCESS"});
 
                         preparing = false;
