@@ -13,6 +13,7 @@ class FileExplorer extends Component {
 
     
     state = {
+        userinfo: {name: "usr1", token: ""},
         reloadDir: false,
         index: '',
         filelist: '',
@@ -32,7 +33,35 @@ class FileExplorer extends Component {
         }
     }
     componentDidMount() {
+        console.log(this.state.userinfo.token)
+        if (this.state.userinfo.token == "") {
+            this.login(this.state.userinfo.name, "123123");
+        }
         this.loadFilelist();
+    }
+
+    async login(name, passwd) {
+        if (this.state.userinfo.token != "") return;
+        let response = await fetch(`http://${serverAddress}:3001/login`, {
+            method: "POST",
+            body: JSON.stringify({
+                name: name,
+                passwd: passwd
+            }),
+            headers: {
+                    'content-type': 'application/json'
+            }
+        });
+        response = await response.json();
+        if (response.status) return this.Notification("error", "로그인 실패", response.msg);
+        // this.Notification("warning", "로그인 성공", `${response.name} 님 환영합니다.`);
+        this.setState({
+            userinfo: {
+                name: response.name,
+                token: response.token
+            },
+            reloadDir: true
+        });
     }
 
     async GoPreviousIndex() {
@@ -61,10 +90,10 @@ class FileExplorer extends Component {
     async indexDir(path, callback) {
         let indexdirectory;
         try {
-
+            if (this.state.userinfo.token == "") return;
             indexdirectory = await fetch(`http://${serverAddress}:3001/index`, {
                 method: "POST",
-                body: JSON.stringify({path: path}),
+                body: JSON.stringify({path: path, token: this.state.userinfo.token}),
                 headers: {
                         'content-type': 'application/json'
                 }
@@ -83,7 +112,7 @@ class FileExplorer extends Component {
         }
 
         if(indexdirectory.status) {
-            this.Notification("error", "디렉터리 로드 오류", `오류 코드: ${indexdirectory.msg.errno}`);
+            this.Notification("error", "디렉터리 로드 오류", `오류 코드: ${indexdirectory.msg}`);
             return console.log("err", indexdirectory.msg);
         }
         if(indexdirectory.executeTime > 1000) {

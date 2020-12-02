@@ -69,15 +69,29 @@ function replace(str, replaceStr) {
 
 
 app.post("/index", (req, res) => {
-    // req.url = req.url.replace("/index", "");
-    // const path = DATAPATH+req.url.split('?')[0];
-    const path = DATAPATH+'/'+req.body.path;
+    const token = req.body.token;
     const Timer = Date.now();
-    DirM.getInsideDir(path, result => {
-        if (result.err) res.send({status:1, msg: result.err});
-        else res.send({status: 0, msg: result, executeTime: Date.now() - Timer});
-        // console.log(result);
-    })
+    if (req.body.path == undefined || req.body.token == undefined) return res.send({status: 1, msg: "ARGS_NOT_RECIVED"});
+    if (token) {
+        DB.get(`SELECT * FROM UserInfo where token="${token}"`, (err, row) => {
+
+            if (err) return res.send({status: 1, msg: err});
+            if (row == undefined) return res.send({status: 1, msg: "INVAILD_TOKEN"});
+
+            
+            let path = `${DATAPATH}/home/${row.name}/${req.body.path.replace("..", "")}`;
+            path = path.replace("//", "/");
+            console.log("indexing ", path);
+            DirM.getInsideDir(path, result => {
+                if (result.err) res.send({status:1, msg: result.err});
+                else res.send({status: 0, msg: result, executeTime: Date.now() - Timer});
+                // console.log(result);
+            });
+
+        });
+    } else {
+        res.send({status: 1, msg: "TOKEN_NOT_RECIVED"});
+    }
 });
 
 app.post("/size", (req, res) => {
@@ -162,9 +176,9 @@ app.post("/mkdir", (req, res) => {
 
 
 app.post("/register", (req, res) => {
+    if (req.body.name == undefined || req.body.passwd == undefined) return res.send({status: 1, msg: "RECIVED_UNDEFINED"});
     const name = req.body.name;
     const passwd = SHA256(req.body.passwd);
-
     DB.all(`SELECT * FROM UserInfo WHERE name="${name}"`, (err, rows) => {
         if (err) return console.log(`ERROR GET ${err}`);
 

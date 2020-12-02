@@ -11,6 +11,7 @@ const getFolderSize = require('get-folder-size');
 // 폴더 생성 O
 // 디렉토리 탐색 O
 // 디스크 용량 가져오기 O
+// 휴지통으로 이동 X
 
 
 // 파일 검색 O
@@ -196,7 +197,20 @@ class DManager {
         return {name: file_name, type: file_type, hidden: is_hidden};
     }
 
-
+    moveToRecycleBin(path) {
+        let recycleBinPath = "\$Recycle.Bin\%SID%";
+        fs.rename(path, recycleBinPath, function (err) {
+            if (err) {
+                if (err.code === 'EXDEV') {
+                    copy();
+                } else {
+                    callback(err);
+                }
+                return;
+            }
+            callback();
+        })  
+    }
 
 }
 

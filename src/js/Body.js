@@ -27,7 +27,7 @@ class Body extends Component {
         return (
             <div className="Body">
                 <SideBar Notification={this.Notification.bind(this)} />
-                <FileExplorer Notification={this.Notification.bind(this)} />
+                <FileExplorer parent={this} Notification={this.Notification.bind(this)} />
             </div>
         )
     }
