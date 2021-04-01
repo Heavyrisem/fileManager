@@ -1,70 +1,18 @@
-# Getting Started with Create React App
+# FileDrive
+개인 서버에 Nas를 구축하던 중에 웹으로 접속하여 사용할수 있는 웹 드라이브 페이지를 만들면 더욱 편하게 쓸수 있겠다는 아이디어에서 시작되었습니다.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+구글 드라이브의 구조에 많은 영향을 받아 개발했고, 아직 미완성인 부분이 많습니다.
 
-## Available Scripts
+## FrontEnd
+React.js로 개발했습니다.
+TypeScript를 접하기 이전에 시작한 프로젝트여서 js로만 구성되어 있고, 프론트엔드 영역에서는 로그인이나 파일 업로드, 클라우드 디렉터리 탐색, 관리, 파일 추가 삭제 등의 기능을 목표로 잡고 있습니다.
 
-In the project directory, you can run:
+## BackEnd
+Node + Express.js로 개발했습니다.
+마찬가지로 js로만 구성되어 있고, 덕영 온라인 전자서명 시스템에 사용한 깃허브와 연동하여 커밋을 감지하여 리액트 빌드, 서버 재시작까지 자동으로 하는 코드를 포함하고 있습니다.
 
-### `npm start`
+또한 로그인 기능을 위해 sqlite 데이터베이스를 사용했습니다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+핵심 기능들인 파일 업로드, 다운로드, 디렉터리 탐색 등은 대부분 구현되어 있으며 오류 수정과 최적화 작업만 남겨두고 있는 상황입니다.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+원하는 파일을 탐색하는 기능의 구현이 필요하여, 디렉터리를 탐색하는 간단한 알고리즘도 개발하였습니다.
